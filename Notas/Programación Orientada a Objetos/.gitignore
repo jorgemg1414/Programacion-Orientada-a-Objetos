@@ -1,0 +1,17 @@
+# Estado de la interfaz (cambia a cada rato, no aporta nada)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/graph.json
+
+# Caché de plugins
+.obsidian/plugins/*/data.json
+
+# Papelera interna de Obsidian
+.trash/
+
+# Basura de macOS
+.DS_Store
+.AppleDouble
+._*
+.Spotlight-V100
+.Trashes
