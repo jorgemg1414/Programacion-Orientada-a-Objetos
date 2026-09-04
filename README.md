@@ -7,7 +7,8 @@ Apuntes y ejercicios del curso.
 ```
 .
 ├── Notas/Programación Orientada a Objetos/   Vault de Obsidian
-│   ├── Bienvenido.md                         Índice del vault
+│   ├── Bienvenido.md                         Índice: clases por mes y temas
+│   ├── Chuleta Markdown.md                   Referencia de sintaxis
 │   ├── Images/                               Imágenes de las notas
 │   ├── Agosto/
 │   │   └── Clase DD-MM-AAAA.md
@@ -56,4 +57,4 @@ Los `.class` no se suben al repo (están en `.gitignore`).
 | 25-08-2026 | [Clase 25-08-2026](Notas/Programación%20Orientada%20a%20Objetos/Agosto/Clase%2025-08-2026.md) | — |
 | 28-08-2026 | [Clase 28-08-2026](Notas/Programación%20Orientada%20a%20Objetos/Agosto/Clase%2028-08-2026.md) | `Ejemplo.java`, `Ejercicio1.java` |
 | 01-09-2026 | [Clase 01-09-2026](Notas/Programación%20Orientada%20a%20Objetos/Septiembre/Clase%2001-09-2026.md) | — |
-| 04-09-2026 | — | `ConsolaDeVideoJuegos.java`, `Principal.java` |
+| 04-09-2026 | *(pendiente)* | `ConsolaDeVideoJuegos.java`, `Principal.java` |
