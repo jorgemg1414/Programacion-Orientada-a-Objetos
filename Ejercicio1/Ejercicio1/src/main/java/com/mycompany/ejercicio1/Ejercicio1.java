@@ -3,6 +3,7 @@
  */
 
 package com.mycompany.ejercicio1;
+import java.util.*;
 
 /**
  *
@@ -10,51 +11,48 @@ package com.mycompany.ejercicio1;
  */
 public class Ejercicio1 {
 
+    
+    
     public static void main(String[] args) {
+        Scanner sn=new Scanner(System.in);
+        int menu;
+        Futbolista jugador1=new Futbolista("","",0,0,0,"");
+        System.out.println("Generando un equipo de futbol");
+        System.out.println("1, Capturar datos de futbolista");
+        System.out.println("2. Consentrarse");
+        System.out.println("3. Viajar");
+        System.out.println("4. Jugar");
+        System.out.println("5. Entrenar");
+        System.out.println("Dame tu opcion: ");
+        menu=sn.nextInt();
+        sn.nextLine(); //consume el salto de linea que deja nextInt
+        switch(menu){
+            case 1: {
+                System.out.println("Dame el nombre del futbolista");
+                jugador1.setNombre(sn.nextLine());
+                System.out.println("Apellido");
+                jugador1.setApellido(sn.nextLine());
+                System.out.println("ID");
+                jugador1.setId(sn.nextInt());
+                sn.nextLine();
+                System.out.println("Edad");
+                jugador1.setEdad(sn.nextInt());
+                sn.nextLine();
+                System.out.println("Dorsal");
+                jugador1.setDorsal(sn.nextInt());
+                sn.nextLine();
+                System.out.println("Demarcacion");
+                jugador1.setDemarcación(sn.nextLine());
+            }
+            case 2: 
+                jugador1.consentrarse();
+            case 3:
+                jugador1.viajar();
+            case 4: 
+                jugador1.jugarPartido();
+            case 5: 
+                jugador1.entrenar();
+        }
         
-        /*Creamos dos objetos de la clase Persona usando el constructor*/
-        Persona persona1 = new Persona("Jorge", "Martinez", 20, 1);
-        Persona persona2 = new Persona("Ana", "Lopez", 25, 2);
-        
-        /*USO DE GETTERS: leer los atributos
-         * El getter devuelve el valor del atributo y lo podemos usar en un
-         * println, guardarlo en una variable, compararlo, etc.
-         */
-        System.out.println("--- Datos de persona 1 (getters) ---");
-        System.out.println("Id: " + persona1.getId());
-        System.out.println("Nombre: " + persona1.getNombre());
-        System.out.println("Apellido: " + persona1.getApellido());
-        System.out.println("Edad: " + persona1.getEdad() + "\n");
-        
-        System.out.println("--- Datos de persona 2 (getters) ---");
-        System.out.println("Id: " + persona2.getId());
-        System.out.println("Nombre: " + persona2.getNombre());
-        System.out.println("Apellido: " + persona2.getApellido());
-        System.out.println("Edad: " + persona2.getEdad() + "\n");
-        
-        /*USO DE SETTERS: modificar los atributos
-         * El setter recibe el nuevo valor y lo guarda en el atributo.
-         * Aqui persona 2 se cambia el apellido y cumple anios.
-         */
-        System.out.println("--- Modificando persona 2 (setters) ---");
-        persona2.setApellido("Garcia");
-        persona2.setEdad(persona2.getEdad() + 1); //getter y setter juntos
-        
-        /*Comprobamos con los getters que el cambio se aplico*/
-        System.out.println("Nombre: " + persona2.getNombre());
-        System.out.println("Apellido: " + persona2.getApellido());
-        System.out.println("Edad: " + persona2.getEdad() + "\n");
-        
-        /*VENTAJA DEL SETTER: validar datos
-         * Intentamos guardar una edad invalida. Como el setter la valida,
-         * el atributo NO cambia y se conserva el valor anterior.
-         */
-        System.out.println("--- Validacion en el setter ---");
-        persona1.setEdad(-5);
-        System.out.println("Edad de persona 1 sigue siendo: " + persona1.getEdad());
-        
-        /*El id no tiene setter, asi que persona1.setId(...) daria error
-         * de compilacion. Solo se puede leer con getId().
-         */
     }
 }

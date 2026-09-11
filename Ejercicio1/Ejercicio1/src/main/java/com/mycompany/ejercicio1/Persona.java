@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.ejercicio1;
+import java.util.*;
 
 /**
  *
@@ -28,6 +29,22 @@ public class Persona {
     this.edad=edad;
     }
     
+public void consentrarse () {
+    System.out.println("Nos encontramos en conentración de un día");
+}
+
+public void viajar () {
+    String origen, destino;
+    Scanner sn=new Scanner (System.in);
+    
+    System.out.println("dime origen");
+    origen = sn.nextLine();
+    System.out.println("Dime el destino");
+    destino = sn.nextLine();
+    System.out.println("Viajando a: ");
+    System.out.println("De origen "+ origen +" a "+ destino);
+}
+    
     /*Metodos getter y setter
      *
      * Que son:
@@ -45,7 +62,7 @@ public class Persona {
      *   - Dentro del setter podemos validar el dato antes de guardarlo
      *     (ejemplo: no aceptar una edad negativa).
      *   - Si a un atributo solo le ponemos getter y no setter, queda de
-     *     solo lectura (ejemplo: el id no deberia cambiar nunca).
+     *     solo lectura desde fuera de la clase.
      */
     
     /*Getter y setter de nombre*/
@@ -82,10 +99,12 @@ public class Persona {
         }
     }
     
-    /*Solo getter de id: el id identifica a la persona y no debe cambiar,
-     * por eso NO tiene setter (atributo de solo lectura desde fuera).
-     */
+    /*Getter y setter de id*/
     public int getId(){
         return this.id;
+    }
+    
+    public void setId(int id){
+        this.id=id;
     }
 }
