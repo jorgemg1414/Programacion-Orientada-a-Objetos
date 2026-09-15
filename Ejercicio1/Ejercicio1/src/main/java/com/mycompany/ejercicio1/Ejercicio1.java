@@ -16,7 +16,21 @@ public class Ejercicio1 {
     public static void main(String[] args) {
         Scanner sn=new Scanner(System.in);
         int menu;
-        Futbolista jugador1=new Futbolista("","",0,0,0,"");
+        int numeroJugadores=0, contadorJugadores=0, jugador;
+        String nombreEquipo;
+        System.out.println("Estamos creando un equipo de futbol");
+        System.out.println("Cuántos jugadores vas a comprar");
+        numeroJugadores = sn.nextInt();
+        sn.nextLine();
+        System.out.println("Dame el nombre de tu equipo");
+        nombreEquipo=sn.nextLine();
+        //Futbolista jugador1=new Futbolista("","",0,0,0,"");
+        Futbolista EquipoFutbol[]=new Futbolista[numeroJugadores];
+        
+        
+        /*******************************?/
+        System.out.println("Construyendo el equipo de futbol" + nombreEquipo);
+        
         System.out.println("Generando un equipo de futbol");
         System.out.println("1, Capturar datos de futbolista");
         System.out.println("2. Consentrarse");
@@ -28,30 +42,55 @@ public class Ejercicio1 {
         sn.nextLine(); //consume el salto de linea que deja nextInt
         switch(menu){
             case 1: {
+                
+                while(contadorJugadores<numeroJugadores){
+                //Instanciar el objeto de cada una de las posiciones del arreglo
+                EquipoFutbol[contadorJugadores]=new Futbolista("","",0,0,0,"");
+                //Mandar a llamar los objetos de la clase futbolista
+                
                 System.out.println("Dame el nombre del futbolista");
-                jugador1.setNombre(sn.nextLine());
+                EquipoFutbol[contadorJugadores].setNombre(sn.nextLine());
                 System.out.println("Apellido");
-                jugador1.setApellido(sn.nextLine());
+                EquipoFutbol[contadorJugadores].setNombre(sn.nextLine());
                 System.out.println("ID");
-                jugador1.setId(sn.nextInt());
+                EquipoFutbol[contadorJugadores].setNombre(sn.nextLine());
                 sn.nextLine();
                 System.out.println("Edad");
-                jugador1.setEdad(sn.nextInt());
+                EquipoFutbol[contadorJugadores].setNombre(sn.nextLine());
                 sn.nextLine();
                 System.out.println("Dorsal");
-                jugador1.setDorsal(sn.nextInt());
+                EquipoFutbol[contadorJugadores].setNombre(sn.nextLine());
                 sn.nextLine();
                 System.out.println("Demarcacion");
-                jugador1.setDemarcación(sn.nextLine());
+                EquipoFutbol[contadorJugadores].setNombre(sn.nextLine());
+                contadorJugadores++;
+                break;}
             }
-            case 2: 
-                jugador1.consentrarse();
-            case 3:
-                jugador1.viajar();
-            case 4: 
-                jugador1.jugarPartido();
-            case 5: 
-                jugador1.entrenar();
+            case 2: {
+                System.out.println("Dime el numero de jugador que desea concentrarse");
+                jugador=sn.nextInt();
+                EquipoFutbol[jugador].consentrarse();
+                break;
+            }
+            case 3:{
+                System.out.println("Dime el numeor de jugador que desea que viaje");
+                jugador=sn.nextInt();
+                EquipoFutbol[jugador].viajar();
+                break;
+            }
+            case 4: {
+                System.out.println("Dime el numero de jugador que desea que juegue el partido");
+                jugador=sn.nextInt();
+                EquipoFutbol[jugador].jugarPartido();
+                break;
+            }
+            case 5: {
+                System.out.println("Dime el numero de jugador que desea que entrene");
+                jugador=sn.nextInt();
+                EquipoFutbol[jugador].entrenar();
+                break;
+            }
+                
         }
         
     }
