@@ -18,3 +18,4 @@
 **/.obsidian/plugins/*/data.json
 # Papelera interna de Obsidian
 .trash/
+/FigurasGeometricas/target/
