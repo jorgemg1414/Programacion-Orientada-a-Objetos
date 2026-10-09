@@ -8,14 +8,18 @@ package com.mycompany.e_arraylistclase;
  *
  * @author jorge
  */
+//clase que representa a cada usuario que se guarda en la lista
 public class Usuario {
+    //atributos: el correo y la contraseña del usuario
     String correo, contraseña;
 
+    //constructor que recibe el correo y la contraseña para crear el objeto
     public Usuario(String correo, String contraseña) {
         this.correo = correo;
         this.contraseña = contraseña;
     }
 
+    //getters y setters para obtener y cambiar los atributos
     public String getCorreo() {
         return correo;
     }
@@ -32,8 +36,9 @@ public class Usuario {
         this.contraseña = contraseña;
     }
 
+    //constructor vacio
     public Usuario() {
     }
-    
-    
+
+
 }
