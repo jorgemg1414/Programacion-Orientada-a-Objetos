@@ -33,13 +33,61 @@ public class E_ArrayListClase {
                     //new Usuario(sn.nextLine(),sn.nextLine()));
                     
                     String usuario, contraseña;
-                    listaUsuarios.add(new Usuario());
                     System.out.println("Ingresa el correo");       
                     usuario=sn.nextLine();
-                    System.out.println("Ingresa la contraseña");
-                    contraseña=sn.nextLine();
+                    
+                    //validar formato del correo
+                    if (!usuario.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+                        System.out.println("El correo no es válido");
+                        break;
+                    }
+                    
+                    //validar que el correo no este repetido
+                    boolean repetido=false;
+                    for (Usuario x : listaUsuarios) {
+                        if (x.getCorreo().equalsIgnoreCase(usuario)) {
+                            repetido=true;
+                        }
+                    }
+                    if (repetido) {
+                        System.out.println("El correo ya está registrado");
+                        break;
+                    }
+                    
+                    //validar contraseña
+                    boolean valida=false;
+                    do {
+                        System.out.println("Ingresa la contraseña");
+                        contraseña=sn.nextLine();
+                        try {
+                            if (contraseña.length()<8) {
+                                throw new Exception("La contraseña debe tener mínimo 8 caracteres");
+                            }
+                            boolean numero=false, especial=false;
+                            for (int i=0; i<contraseña.length(); i++) {
+                                char c=contraseña.charAt(i);
+                                if (Character.isDigit(c)) {
+                                    numero=true;
+                                }
+                                if ("@#$%&".indexOf(c)>=0) {
+                                    especial=true;
+                                }
+                            }
+                            if (!numero) {
+                                throw new Exception("La contraseña debe tener al menos un número");
+                            }
+                            if (!especial) {
+                                throw new Exception("La contraseña debe tener al menos un carácter especial (@, #, $, % o &)");
+                            }
+                            valida=true;
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    } while (!valida);
+                    
                     listaUsuarios.add(
                     new Usuario(usuario, contraseña));
+                    System.out.println("Usuario agregado");
                 break;}
                 
                 case 2:{
