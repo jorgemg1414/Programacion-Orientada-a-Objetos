@@ -21,6 +21,12 @@ clase vive en `Ejercicios Java/<Mes>/Clase DD-MM-AAAA/` en la raíz del repo.
 > La clase del **04-09-2026** ya tiene código (`ConsolaDeVideoJuegos`,
 > `Principal`) pero todavía no tiene nota.
 
+## Proyectos
+
+| Proyecto | Entrega | Qué tiene |
+| --- | --- | --- |
+| [[Caso integrador - Hotel Nodora]] | 30-10-2026 | Cómo funciona el código del hotel y cómo defenderlo en equipo |
+
 ## Referencia
 
 - [[Chuleta Markdown]] — sintaxis de Markdown para Obsidian
