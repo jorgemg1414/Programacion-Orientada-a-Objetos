@@ -1,7 +1,7 @@
-
 package com.mycompany.ventanahola;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 
 /**
@@ -17,32 +17,40 @@ public class VentanaHola extends JFrame {
         setLocation(50,100);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(250,200);
-        setVisible(true);
-        this.getContentPane().setBackground(Color.GREEN);
-        
+
         //Creando un panel
-        Panel X=new Panel();
-        
-        
-        
+        JPanel X=new JPanel();
+        X.setBackground(Color.GREEN);
+
+
+
         JLabel etiqueta1 = new JLabel("Ingresa tu numero de pajitas: ");
         etiqueta1.setForeground(Color.RED);
         etiqueta1.setFont(new Font("Arial", Font.BOLD,14));
-        add(etiqueta1);
-        
+
         //Crear una entrada de texto
-        
+
         JTextField entradaT=new JTextField(20);
-        entradaT.setBounds(50,200,200,50);
-        
+
+        //Boton
+        JButton boton= new JButton ("Mensaje del boton");
+        //Agregamos una accion a ese boton
+        boton.addActionListener(new ActionListener(){
+        @Override
+                public void actionPerformed(ActionEvent e) {
+                    JOptionPane.showMessageDialog(null, boton.getText());
+                }
+                });
         X.add(etiqueta1);
-        X.add(etiqueta1);
+        X.add(entradaT);
+        X.add(boton);
         add (X);
+        setVisible(true);
     }
 
-    
-    
-    
+
+
+
     public static void main(String[] args) {
         new VentanaHola();
     }
