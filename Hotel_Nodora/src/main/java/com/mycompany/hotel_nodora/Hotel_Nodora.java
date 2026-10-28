@@ -29,7 +29,7 @@ public class Hotel_Nodora {
         int opcion; //Opcion que escoge el usuario en el menu
 
         System.out.println("=========================================");
-        System.out.println("       BIENVENIDO AL "+hotel.getNombre().toUpperCase());
+        System.out.println("       BIENVENIDO AL HOTEL NODORA");
         System.out.println("=========================================");
 
         //Se usa do-while porque el menu debe mostrarse al menos una vez.
@@ -58,7 +58,7 @@ public class Hotel_Nodora {
                     break;
                 }
                 case 4: {
-                    System.out.println("Gracias por usar el sistema del "+hotel.getNombre());
+                    System.out.println("Gracias por usar el sistema del Hotel Nodora");
                     break;
                 }
                 default: {
@@ -73,31 +73,31 @@ public class Hotel_Nodora {
      * Como no se guardan en un archivo, se vuelven a crear cada vez que se abre el programa.
      */
     static void cargarDatosDeEjemplo(Hotel hotel){
-        //Cuartos: piso 1 simples, piso 2 dobles y piso 3 matrimoniales.
+        //Cuartos con su numero y su precio por noche, como en HotelApp:
+        //piso 1 simples, piso 2 dobles y piso 3 matrimoniales.
         //Todos se guardan en la misma lista porque todos heredan de Cuarto.
-        hotel.agregarCuarto(new CuartoSimple(101));
-        hotel.agregarCuarto(new CuartoSimple(102));
-        hotel.agregarCuarto(new CuartoSimple(103));
-        hotel.agregarCuarto(new CuartoDoble(201));
-        hotel.agregarCuarto(new CuartoDoble(202));
-        hotel.agregarCuarto(new CuartoDoble(203));
-        hotel.agregarCuarto(new CuartoMatrimonial(301));
-        hotel.agregarCuarto(new CuartoMatrimonial(302));
-        hotel.agregarCuarto(new CuartoMatrimonial(303));
-        //Para agregar un tipo nuevo de cuarto se crea su clase (hija de Cuarto) y se dan de alta sus cuartos aqui, ej:
-        //hotel.agregarCuarto(new Suite(401));
+        hotel.agregarCuarto(new CuartoSimple(101, 800));
+        hotel.agregarCuarto(new CuartoSimple(102, 800));
+        hotel.agregarCuarto(new CuartoSimple(103, 800));
+        hotel.agregarCuarto(new CuartoDoble(201, 1500));
+        hotel.agregarCuarto(new CuartoDoble(202, 1500));
+        hotel.agregarCuarto(new CuartoDoble(203, 1500));
+        hotel.agregarCuarto(new CuartoMatrimonial(301, 1200));
+        hotel.agregarCuarto(new CuartoMatrimonial(302, 1200));
+        hotel.agregarCuarto(new CuartoMatrimonial(303, 1200));
 
         //Clientes habituales (socios) que ya estan en el diccionario del hotel
-        ClienteHabitual ana=new ClienteHabitual("LORA900514MJCPZN03", "Ana Lopez Ruiz", "3312345678", "ana.lopez@correo.com");
-        ClienteHabitual carlos=new ClienteHabitual("RATC851102HJCMRRA5", "Carlos Ramirez Torres", "3398765432", "carlos.ramirez@correo.com");
+        ClienteHabitual ana=new ClienteHabitual("LORA900514MJCPZN03", "Ana Lopez Ruiz", "3312345678");
+        ClienteHabitual carlos=new ClienteHabitual("RATC851102HJCMRRA5", "Carlos Ramirez Torres", "3398765432");
         hotel.registrarClienteHabitual(ana);
         hotel.registrarClienteHabitual(carlos);
 
-        //Reservaciones de ejemplo (dia, mes, anio, noches, huespedes).
+        //Reservaciones de ejemplo (cliente, cuarto, dia, mes, anio, noches, huespedes).
         //La de Ana empieza en octubre y termina en noviembre, para probar las ganancias por mes.
-        hotel.reservar(hotel.buscarCuarto(101), ana, 28, 10, 2026, 5, 1);
-        hotel.reservar(hotel.buscarCuarto(201), new ClienteEsporadico("HEDL920730HJCRZS07", "Luis Hernandez Diaz"), 10, 11, 2026, 3, 3);
-        hotel.reservar(hotel.buscarCuarto(302), carlos, 15, 11, 2026, 2, 2);
+        ClienteEsporadico luis=new ClienteEsporadico("HEDL920730HJCRZS07", "Luis Hernandez Diaz");
+        hotel.agregarReservacion(new Reservacion(ana, hotel.buscarCuarto(101), 28, 10, 2026, 5, 1));
+        hotel.agregarReservacion(new Reservacion(luis, hotel.buscarCuarto(201), 10, 11, 2026, 3, 3));
+        hotel.agregarReservacion(new Reservacion(carlos, hotel.buscarCuarto(302), 15, 11, 2026, 2, 2));
     }
 
     /************************ MENU DEL RECEPCIONISTA ************************/
@@ -120,13 +120,13 @@ public class Hotel_Nodora {
 
             switch(opcion){
                 case 1: {
-                    String tipo=elegirTipo(hotel);
+                    String tipo=elegirTipo();
                     hotel.listarDisponibles(tipo);
                     break;
                 }
                 case 2: {
-                    String tipo=elegirTipo(hotel);
-                    System.out.println("El cuarto "+tipo+" cuesta "+String.format("$%.2f", hotel.getPrecioDelTipo(tipo))+" por noche");
+                    String tipo=elegirTipo();
+                    System.out.println("El cuarto "+tipo+" cuesta $"+String.format("%.2f", hotel.getPrecioDelTipo(tipo))+" por noche");
                     break;
                 }
                 case 3: {
@@ -136,13 +136,13 @@ public class Hotel_Nodora {
                 }
                 case 4: {
                     String curp=leerCurp("CURP del cliente:");
-                    String tipo=elegirTipo(hotel);
+                    String tipo=elegirTipo();
                     int noches=leerEntero("Número de noches:", 1, 365);
                     hotel.calcularPrecioTotal(curp, tipo, noches);
                     break;
                 }
                 case 5: {
-                    String tipo=elegirTipo(hotel);
+                    String tipo=elegirTipo();
                     System.out.println("Así se ve un cuarto "+tipo+" (vista desde arriba):");
                     hotel.dibujarTipo(tipo);
                     break;
@@ -153,18 +153,10 @@ public class Hotel_Nodora {
                 }
                 case 7: {
                     int numero=leerEntero("Número del cuarto de la reservación que se va a eliminar:");
-                    Reservacion r=hotel.buscarReservacion(numero);
-                    //Red de seguridad: si el cuarto no tiene reservacion no hay nada que eliminar
-                    if(r==null){
-                        System.out.println("El cuarto #"+numero+" no tiene reservación");
-                        break;
-                    }
-                    r.mostrarInfo();
-                    if(confirmar("¿Seguro que quieres eliminar esta reservación? (s/n)")){
-                        hotel.eliminarReservacion(numero);
+                    if(hotel.eliminarReservacion(numero)){
                         System.out.println("Reservación eliminada, el cuarto #"+numero+" quedó disponible");
                     }else{
-                        System.out.println("No se eliminó nada");
+                        System.out.println("El cuarto #"+numero+" no tiene reservación");
                     }
                     break;
                 }
@@ -201,11 +193,11 @@ public class Hotel_Nodora {
 
             switch(opcion){
                 case 1: {
-                    String tipo=elegirTipo(hotel);
-                    System.out.println("Precio actual del cuarto "+tipo+": "+String.format("$%.2f", hotel.getPrecioDelTipo(tipo)));
-                    double nuevoPrecio=leerDecimal("Nuevo precio por noche:", 1, 1000000);
+                    String tipo=elegirTipo();
+                    System.out.println("Precio actual del cuarto "+tipo+": $"+String.format("%.2f", hotel.getPrecioDelTipo(tipo)));
+                    int nuevoPrecio=leerEntero("Nuevo precio por noche:", 1, 100000);
                     hotel.cambiarPrecioDelTipo(tipo, nuevoPrecio);
-                    System.out.println("Listo, ahora todos los cuartos "+tipo+" cuestan "+String.format("$%.2f", nuevoPrecio)+" por noche");
+                    System.out.println("Listo, ahora todos los cuartos "+tipo+" cuestan $"+nuevoPrecio+" por noche");
                     System.out.println("(las reservaciones que ya estaban hechas conservan su precio)");
                     break;
                 }
@@ -222,7 +214,7 @@ public class Hotel_Nodora {
                     int anio=leerEntero("Año:", 2000, 2100);
                     System.out.println("Ganancias de "+mes+"/"+anio+" (todos los meses de 30 días):");
                     double total=hotel.calcularGanancias(mes, anio);
-                    System.out.println("Total de ganancias del mes: "+String.format("$%.2f", total));
+                    System.out.println("Total de ganancias del mes: $"+String.format("%.2f", total));
                     break;
                 }
                 case 4: {
@@ -256,13 +248,11 @@ public class Hotel_Nodora {
                         System.out.println("Esa CURP ya está registrada como cliente habitual");
                         break;
                     }
-                    String nombre=leerTexto("Tu nombre completo:");
-                    String telefono=leerConFormato("Tu teléfono (10 dígitos):", "^[0-9]{10}$",
-                            "El teléfono debe tener 10 números, sin espacios ni guiones");
-                    //Misma validacion del correo que en E_ArrayListClase: texto, @, dominio, punto y minimo 2 letras
-                    String correo=leerConFormato("Tu correo:", "^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$",
-                            "El correo no es válido");
-                    hotel.registrarClienteHabitual(new ClienteHabitual(curp, nombre, telefono, correo));
+                    System.out.println("Tu nombre completo:");
+                    String nombre=sn.nextLine();
+                    System.out.println("Tu teléfono:");
+                    String telefono=sn.nextLine();
+                    hotel.registrarClienteHabitual(new ClienteHabitual(curp, nombre, telefono));
                     System.out.println("¡Listo, "+nombre+"! Ya eres cliente habitual y tienes "
                             +ClienteHabitual.getPorcentajeDescuento()+"% de descuento en tus reservaciones");
                     break;
@@ -280,10 +270,6 @@ public class Hotel_Nodora {
                         break;
                     }
                     int numero=leerEntero("Número de cuarto de la reservación que quieres anular:");
-                    if(!confirmar("¿Seguro que quieres anular la reservación del cuarto #"+numero+"? (s/n)")){
-                        System.out.println("No se anuló nada");
-                        break;
-                    }
                     //anularReservacion revisa que la reservacion de ese cuarto sea de esta CURP
                     if(hotel.anularReservacion(curp, numero)){
                         System.out.println("Reservación anulada");
@@ -330,7 +316,8 @@ public class Hotel_Nodora {
             System.out.println("Cliente habitual: "+cliente.getNombre()+" (tiene "+cliente.getDescuento()+"% de descuento)");
         }else{
             //Si no es socio se le pide el nombre y se crea como cliente esporadico
-            String nombre=leerTexto("Nombre del cliente:");
+            System.out.println("Nombre del cliente:");
+            String nombre=sn.nextLine();
             cliente=new ClienteEsporadico(curp, nombre);
         }
 
@@ -341,29 +328,31 @@ public class Hotel_Nodora {
         int anio=leerEntero("Año:", 2000, 2100);
         int noches=leerEntero("Número de noches:", 1, 365);
 
-        Reservacion nueva=hotel.reservar(cuarto, cliente, dia, mes, anio, noches, huespedes);
-        if(nueva==null){
-            System.out.println("No se pudo hacer la reservación");
-            return;
-        }
+        //Se crea la reservacion y se guarda en el hotel
+        Reservacion nueva=new Reservacion(cliente, cuarto, dia, mes, anio, noches, huespedes);
+        hotel.agregarReservacion(nueva);
         System.out.println("¡Reservación hecha!");
         nueva.mostrarInfo();
     }
 
-    //Muestra los tipos de cuarto que tiene el hotel y regresa el que se escoja.
-    //Como la lista sale de hotel.getTipos(), si se agrega un tipo nuevo aparece aqui solito.
-    static String elegirTipo(Hotel hotel){
-        ArrayList<String> tipos=hotel.getTipos();
+    //Muestra los tipos de cuarto y regresa el que se escoja.
+    //Si se agrega un tipo nuevo de cuarto (ej. Suite), aqui se le agrega su opcion.
+    static String elegirTipo(){
         System.out.println("Tipos de cuarto:");
-        for(int i=0; i<tipos.size(); i++){
-            System.out.println((i+1)+". "+tipos.get(i));
+        System.out.println("1. Simple");
+        System.out.println("2. Doble");
+        System.out.println("3. Matrimonial");
+        int opcion=leerEntero("Elige el tipo:", 1, 3);
+        if(opcion==1){
+            return "Simple";
+        }else if(opcion==2){
+            return "Doble";
+        }else{
+            return "Matrimonial";
         }
-        int opcion=leerEntero("Elige el tipo:", 1, tipos.size());
-        //Se le resta 1 porque la lista empieza en la posicion 0
-        return tipos.get(opcion-1);
     }
 
-    /************************ LECTURA DE DATOS CON VALIDACION ************************/
+    /************************ LECTURA DE DATOS ************************/
 
     /*Pide un numero entero y no deja avanzar hasta que se teclee uno.
      * Se lee toda la linea y se convierte con Integer.parseInt; si lo que se tecleo no es
@@ -399,77 +388,17 @@ public class Hotel_Nodora {
         return numero;
     }
 
-    //Igual que leerEntero pero acepta decimales (para los precios)
-    static double leerDecimal(String mensaje, double min, double max){
-        double numero=0;
-        boolean valido;
-        do{
-            System.out.println(mensaje);
-            try{
-                numero=Double.parseDouble(sn.nextLine().trim());
-                valido=numero>=min && numero<=max;
-                if(!valido){
-                    System.out.println("Error: el número debe estar entre "+String.format("%.2f", min)+" y "+String.format("%.2f", max));
-                }
-            }catch(NumberFormatException e){
-                System.out.println("Error: debes teclear un número");
-                valido=false;
-            }
-        } while(!valido);
-        return numero;
-    }
-
-    //Pide un texto y no deja avanzar si se deja vacio
-    static String leerTexto(String mensaje){
-        String texto;
-        do{
-            System.out.println(mensaje);
-            texto=sn.nextLine().trim();
-            if(texto.isEmpty()){
-                System.out.println("No puede quedar vacío");
-            }
-        } while(texto.isEmpty());
-        return texto;
-    }
-
-    //Pide un texto y lo vuelve a pedir hasta que cumpla con el formato (expresion regular con matches)
-    static String leerConFormato(String mensaje, String formato, String error){
-        String texto;
-        boolean valido;
-        do{
-            System.out.println(mensaje);
-            texto=sn.nextLine().trim();
-            valido=texto.matches(formato);
-            if(!valido){
-                System.out.println(error);
-            }
-        } while(!valido);
-        return texto;
-    }
-
-    /*Pide una CURP valida. Formato de 18 caracteres:
-     * 4 letras, 6 numeros (fecha de nacimiento AAMMDD), sexo (H, M o X),
-     * 5 letras (estado y consonantes del nombre), 1 letra o numero y 1 numero.
-     * Se pasa a mayusculas para aceptarla aunque la escriban en minusculas.
-     */
+    //Pide una CURP y la vuelve a pedir hasta que tenga 18 caracteres.
+    //Se pasa a mayusculas para aceptarla aunque la escriban en minusculas.
     static String leerCurp(String mensaje){
         String curp;
-        boolean valida;
         do{
             System.out.println(mensaje);
             curp=sn.nextLine().trim().toUpperCase();
-            valida=curp.matches("^[A-Z]{4}[0-9]{6}[HMX][A-Z]{5}[A-Z0-9][0-9]$");
-            if(!valida){
-                System.out.println("CURP no válida: deben ser 18 caracteres, ej. LORA900514MJCPZN03");
+            if(curp.length()!=18){
+                System.out.println("La CURP debe tener 18 caracteres");
             }
-        } while(!valida);
+        } while(curp.length()!=18);
         return curp;
-    }
-
-    //Hace una pregunta de si o no; regresa true solo si contestan s o S
-    static boolean confirmar(String pregunta){
-        System.out.println(pregunta);
-        String respuesta=sn.nextLine().trim();
-        return respuesta.equalsIgnoreCase("s");
     }
 }

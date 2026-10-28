@@ -11,14 +11,11 @@ package com.mycompany.hotel_nodora;
 
 //Equipo: De Anda Gomez Santiago, Martin Gomez Jorge, Martin Valencia Oscar Jesus, Yanez Sanchez Eduardo
 
-//Hereda de Cuarto igual que el simple; cambia el precio, la capacidad, las camas y el dibujo
+//Hereda de Cuarto igual que el simple; cambia el tipo, la capacidad y el dibujo
 public class CuartoDoble extends Cuarto {
 
-    //Precio compartido por todos los cuartos dobles (static, igual que en CuartoSimple)
-    private static double precio=1500.0;
-
-    public CuartoDoble(int numero){
-        super(numero);
+    public CuartoDoble(int numero, double precio){
+        super(numero,precio);
     }
 
     @Override
@@ -26,26 +23,10 @@ public class CuartoDoble extends Cuarto {
         return "Doble";
     }
 
-    @Override
-    public double getPrecio(){
-        return precio;
-    }
-
-    //Cambia el precio de todos los dobles
-    @Override
-    public void setPrecio(double nuevoPrecio){
-        precio=nuevoPrecio;
-    }
-
     //Dos camas matrimoniales, caben 2 personas en cada una
     @Override
     public int getCapacidad(){
         return 4;
-    }
-
-    @Override
-    public String getCamas(){
-        return "2 camas matrimoniales";
     }
 
     //Dibujo del cuarto visto desde arriba: dos camas con un buro en medio

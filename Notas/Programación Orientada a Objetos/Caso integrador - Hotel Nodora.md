@@ -37,7 +37,7 @@ La frase clave para la defensa: **los menús solo piden datos y le piden al hote
 
 ```java
 case 1: {
-    String tipo=elegirTipo(hotel);
+    String tipo=elegirTipo();
     hotel.listarDisponibles(tipo);
     break;
 }
@@ -47,13 +47,13 @@ El menú pregunta el tipo y el hotel hace la búsqueda. El programa arranca en `
 
 ## 2. Los 4 pilares de POO
 
-**Abstracción.** `Cuarto` (`Cuarto.java` línea 23) y `Cliente` (`Cliente.java` línea 21) son `abstract`: no se puede hacer `new Cuarto(...)`. Declaran métodos sin cuerpo (`getTipo()`, `getPrecio()`, `dibujar()`…) que dicen *qué* debe saber hacer todo cuarto, pero no *cómo*. Es lo mismo que `FigurasGeometricas` con `dibujar()`, `area()` y `perimetro()`.
+**Abstracción.** `Cuarto` (`Cuarto.java` línea 22) y `Cliente` (`Cliente.java` línea 21) son `abstract`: no se puede hacer `new Cuarto(...)`. Declaran métodos sin cuerpo (`getTipo()`, `getCapacidad()`, `dibujar()`…) que dicen *qué* debe saber hacer todo cuarto, pero no *cómo*. Es lo mismo que `FigurasGeometricas` con `dibujar()`, `area()` y `perimetro()`.
 
-**Herencia.** `CuartoSimple extends Cuarto` y le manda el número al padre con `super(numero)`. `ClienteHabitual extends Cliente` usa `super(curp,nombre)`. En `ClienteHabitual.java` línea 50, `super.mostrarInfo()` reutiliza la versión del padre y solo agrega teléfono, correo y descuento.
+**Herencia.** `CuartoSimple extends Cuarto` y le manda el número y el precio al padre con `super(numero,precio)`. `ClienteHabitual extends Cliente` usa `super(curp,nombre)`. En `ClienteHabitual.java` línea 48, `super.mostrarInfo()` reutiliza la versión del padre y solo agrega el teléfono y el descuento.
 
 **Encapsulamiento.** Los atributos son `private`; los de los padres son `protected` para que las hijas los usen. `Reservacion` solo tiene getters y ningún setter: una reservación no se puede modificar desde fuera, solo crear o eliminar.
 
-**Polimorfismo.** El hotel guarda todos los cuartos en un solo `ArrayList<Cuarto>`; al hacer `c.getPrecio()` o `c.dibujar()`, cada objeto ejecuta **su** versión. El mejor ejemplo es `aplicarDescuento` (`Cliente.java` línea 40):
+**Polimorfismo.** El hotel guarda todos los cuartos en un solo `ArrayList<Cuarto>`; al hacer `c.getTipo()` o `c.dibujar()`, cada objeto ejecuta **su** versión. El mejor ejemplo es `aplicarDescuento` (`Cliente.java` línea 40):
 
 ```java
 public double aplicarDescuento(double precio){
@@ -65,19 +65,33 @@ Se escribió una sola vez en el padre, pero `getDescuento()` regresa 10 si el ob
 
 > [!TIP] Sobrecarga contra sobrescritura
 > - **Sobrescritura:** `getTipo()` en cada hija, con el mismo nombre y los mismos parámetros que el padre, y `@Override`.
-> - **Sobrecarga:** `leerEntero(mensaje)` y `leerEntero(mensaje, min, max)` (`Hotel_Nodora.java` líneas 373 y 391): mismo nombre, diferentes parámetros.
+> - **Sobrecarga:** `leerEntero(mensaje)` y `leerEntero(mensaje, min, max)` (`Hotel_Nodora.java` líneas 362 y 380): mismo nombre, diferentes parámetros.
 
 ## 3. Lo que más nos pueden preguntar
 
-### Los precios son `static`
+### El precio de los cuartos
+
+Cada cuarto guarda su precio en el atributo `precio` (`Cuarto.java` línea 26), igual que `precioPorNoche` en HotelApp. Todos los cuartos del mismo tipo empiezan con el mismo precio en `cargarDatosDeEjemplo`.
+
+Para cambiar el precio de un tipo, `cambiarPrecioDelTipo` (`Hotel.java` línea 107) recorre todos los cuartos y le cambia el precio a cada uno que sea de ese tipo:
 
 ```java
-private static double precio=800.0;   //en CuartoSimple
+for(Cuarto c : cuartos){
+    if(c.getTipo().equals(tipo)){
+        c.setPrecio(nuevoPrecio);
+    }
+}
 ```
 
-El precio es del **tipo**, no de cada cuarto: los 3 cuartos simples comparten esa misma variable. Cuando el administrador lo cambia, `cambiarPrecioDelTipo` (`Hotel.java` línea 126) busca el primer cuarto de ese tipo y le llama `setPrecio(...)`; como la variable es `static`, el precio cambia para los tres.
+Para preguntar el precio de un tipo, `getPrecioDelTipo` (línea 96) regresa el del primer cuarto de ese tipo, porque todos cuestan lo mismo.
 
-El descuento de los socios funciona igual (`ClienteHabitual.java` línea 26) y se consulta sin necesidad de un objeto: `ClienteHabitual.getPorcentajeDescuento()`.
+### El descuento es `static`
+
+```java
+private static int porcentajeDescuento=10;   //en ClienteHabitual
+```
+
+Está en `ClienteHabitual.java` línea 25. El descuento es el mismo para todos los socios, por eso es `static`: todos los objetos `ClienteHabitual` comparten esa misma variable, y cuando el administrador la cambia, cambia para todos. Se consulta sin necesidad de un objeto: `ClienteHabitual.getPorcentajeDescuento()`.
 
 ### El diccionario (HashMap)
 
@@ -85,7 +99,7 @@ El descuento de los socios funciona igual (`ClienteHabitual.java` línea 26) y s
 private HashMap<String, Cliente> clientesHabituales=new HashMap<>();
 ```
 
-Está en `Hotel.java` línea 31. La clave es la CURP y el valor es el cliente con sus datos. Se usan 4 métodos:
+Está en `Hotel.java` línea 30. La clave es la CURP y el valor es el cliente con sus datos. Se usan 4 métodos:
 
 - `put` para registrar,
 - `get` para buscar (regresa `null` si no es socio),
@@ -96,7 +110,7 @@ Está en `Hotel.java` línea 31. La clave es la CURP y el valor es el cliente co
 
 ### Socio o esporádico
 
-"Registrarse como cliente" quiere decir hacerse socio (cliente habitual). Al reservar, `hacerReservacion` (`Hotel_Nodora.java` línea 310) busca la CURP en el diccionario:
+"Registrarse como cliente" quiere decir hacerse socio (cliente habitual). Al reservar, `hacerReservacion` (`Hotel_Nodora.java` línea 296) busca la CURP en el diccionario:
 
 - si está, el cliente es un `ClienteHabitual` y tiene descuento;
 - si no está, se le pide el nombre y se crea un `ClienteEsporadico`, sin descuento.
@@ -105,7 +119,7 @@ Los dos quedan en una variable de tipo `Cliente`, que otra vez es polimorfismo.
 
 ### Disponible = sin reservación
 
-`estaDisponible` (`Hotel.java` línea 86) solo revisa si ese cuarto tiene una reservación. Cada cuarto tiene como máximo una, y por eso el recepcionista puede eliminar una reserva solo con el número de cuarto.
+`estaDisponible` (`Hotel.java` línea 61) solo revisa si ese cuarto tiene una reservación. Cada cuarto tiene como máximo una, y por eso el recepcionista puede eliminar una reserva solo con el número de cuarto.
 
 ### El precio se congela al reservar
 
@@ -119,30 +133,40 @@ Si después el administrador cambia el precio o el descuento, las reservaciones 
 
 ### Ganancias de un mes (meses de 30 días)
 
-`nochesEnMes` (`Reservacion.java` línea 55) convierte cada fecha en un "número de día": `anio*360 + (mes-1)*30 + (dia-1)`. Cuentan las noches en las que el rango de la reservación y el del mes se enciman. Con la reservación de Ana (llega el 28/10, 5 noches), sin el año porque es el mismo:
+`nochesEnMes` (`Reservacion.java` línea 55) recorre la reservación noche por noche con un `for`, como si se fueran pasando las hojas de un calendario donde todos los meses tienen 30 días:
 
-- **Reservación:** del día 297 al 302; duerme el 297, 298, 299, 300 y 301.
-- **Octubre:** días 270 a 300. Se enciman 297, 298 y 299, así que son **3 noches**.
-- **Noviembre:** días 300 a 330. Se enciman 300 y 301, así que son **2 noches**.
+- si la noche cae en el mes que se pide, se cuenta;
+- luego se pasa al día siguiente (`d++`); si pasa del día 30, se va al día 1 del mes siguiente, y si pasa del mes 12, a enero del año siguiente.
 
-Luego `calcularGanancias` (`Hotel.java` línea 263) suma `noches × precioPorNoche` de cada reservación. Noviembre: 2×720 + 3×1500 + 2×1080 = **$8100**.
+Con la reservación de Ana (llega el 28/10, 5 noches):
 
-### Los menús de tipos se arman solos (extensibilidad)
+| Noche | Fecha | ¿Cuenta en octubre? | ¿Cuenta en noviembre? |
+| --- | --- | --- | --- |
+| 1 | 28/10 | sí | no |
+| 2 | 29/10 | sí | no |
+| 3 | 30/10 | sí | no |
+| 4 | 1/11 | no | sí |
+| 5 | 2/11 | no | sí |
 
-`getTipos()` (`Hotel.java` línea 63) junta los tipos de cuarto sin repetir y `elegirTipo` (`Hotel_Nodora.java` línea 355) los imprime numerados. Por eso, para agregar una Suite basta con:
+Octubre cuenta **3 noches** y noviembre **2**. Luego `calcularGanancias` (`Hotel.java` línea 246) suma `noches × precioPorNoche` de cada reservación. Noviembre: 2×720 + 3×1500 + 2×1080 = **$8100**.
 
-1. crear `class Suite extends Cuarto` con sus métodos;
-2. agregar `hotel.agregarCuarto(new Suite(401));` en `cargarDatosDeEjemplo`.
+### Agregar tipos nuevos (extensibilidad)
 
-Y ya aparece en todos los menús. Esa es la extensibilidad que pide el enunciado:
+Para agregar una Suite:
+
+1. crear `class Suite extends Cuarto` con `getTipo()`, `getCapacidad()` y `dibujar()`;
+2. agregar la opción `4. Suite` en `elegirTipo` (`Hotel_Nodora.java` línea 340);
+3. agregar sus cuartos en `cargarDatosDeEjemplo`, por ejemplo `hotel.agregarCuarto(new Suite(401, 3000));`.
+
+El resto del programa funciona igual, porque todo trabaja con variables de tipo `Cuarto`. Esa es la extensibilidad que pide el enunciado:
 
 - un tipo de cliente nuevo (por ejemplo VIP) es una hija de `Cliente` con su propio `getDescuento()`;
 - una consulta nueva es un método en `Hotel` más una opción en el menú.
 
 ### Que el programa no truene
 
-- `leerEntero` (`Hotel_Nodora.java` línea 373) lee la línea completa con `nextLine` y la convierte con `Integer.parseInt` dentro de un `try/catch`, como en Ejercicio1. Si tecleas letras se lanza `NumberFormatException` y lo vuelve a pedir. En FigurasGeometricas usamos `nextInt`, que deja el salto de línea pendiente.
-- `leerCurp` (línea 455) usa `matches` con una expresión regular, como el correo en E_ArrayListClase. El formato es: 4 letras, 6 números, H/M/X, 5 letras, 1 letra o número y 1 número.
+- `leerEntero` (`Hotel_Nodora.java` línea 362) lee la línea completa con `nextLine` y la convierte con `Integer.parseInt` dentro de un `try/catch`, como en Ejercicio1. Si tecleas letras se lanza `NumberFormatException` y lo vuelve a pedir. En FigurasGeometricas usamos `nextInt`, que deja el salto de línea pendiente.
+- `leerCurp` (línea 393) vuelve a pedir la CURP hasta que tenga 18 caracteres, y la pasa a mayúsculas con `toUpperCase()` para aceptarla aunque la escriban en minúsculas.
 
 ## 4. Una reservación de principio a fin
 
@@ -153,7 +177,7 @@ Cuando el recepcionista elige la opción 6 (`Hotel_Nodora.java` línea 150):
 3. Pide la CURP y la busca en el diccionario para saber si es socio o esporádico.
 4. Pide los huéspedes con máximo `cuarto.getCapacidad()`: 1, 4 o 2 según el tipo (polimorfismo).
 5. Pide la fecha de llegada y las noches.
-6. `reservar` (`Hotel.java` línea 205) crea el `new Reservacion(...)`, cuyo constructor congela el precio, y lo agrega a la lista.
+6. Crea el `new Reservacion(...)`, cuyo constructor congela el precio, y `agregarReservacion` (`Hotel.java` línea 194) la guarda en la lista.
 7. Muestra la reservación con su total.
 
 Es exactamente el diagrama de actividades, así que se puede explicar con el diagrama en pantalla.
@@ -162,9 +186,10 @@ Es exactamente el diagrama de actividades, así que se puede explicar con el dia
 
 | Pregunta | Respuesta corta |
 | --- | --- |
-| ¿Por qué `Cuarto` es abstracta? | No existe un "cuarto genérico": todo cuarto es simple, doble o matrimonial, y cada uno tiene que decir su precio, capacidad y dibujo. |
-| ¿Dónde está el polimorfismo? | En `ArrayList<Cuarto>` con `getPrecio()` y `dibujar()`, y en `aplicarDescuento()` con `getDescuento()`. |
-| ¿Por qué `static`? | El precio es del tipo y el descuento es de todos los socios: se cambia una vez y aplica a todos. |
+| ¿Por qué `Cuarto` es abstracta? | No existe un "cuarto genérico": todo cuarto es simple, doble o matrimonial, y cada uno tiene que decir su tipo, capacidad y dibujo. |
+| ¿Dónde está el polimorfismo? | En `ArrayList<Cuarto>` con `getTipo()` y `dibujar()`, y en `aplicarDescuento()` con `getDescuento()`. |
+| ¿Por qué el descuento es `static`? | Porque es el mismo para todos los socios: se cambia una vez y aplica a todos. |
+| ¿Cómo cambia el precio de un tipo? | Con un `for` que le cambia el precio a cada cuarto de ese tipo. |
 | ¿Por qué un HashMap? | Para encontrar al socio directo por su CURP. |
 | ¿Qué pasa si cambian el precio después de reservar? | Nada: la reservación guarda el precio con el que se hizo. |
 | ¿Qué pasa si tecleo letras? | El `try/catch` atrapa `NumberFormatException` y lo vuelve a pedir. |
@@ -173,8 +198,8 @@ Es exactamente el diagrama de actividades, así que se puede explicar con el dia
 
 ## 6. Cómo repartir la defensa
 
-- **Uno:** las clases de cuartos y clientes (abstracción, herencia, `static`).
-- **Otro:** la clase `Hotel` (HashMap, disponibilidad, ganancias del mes).
+- **Uno:** las clases de cuartos y clientes (abstracción, herencia y el descuento `static`).
+- **Otro:** la clase `Hotel` (HashMap, disponibilidad, precios y ganancias del mes).
 - **Otro:** los menús y la validación de datos (`do-while`, `switch`, `try/catch`, CURP).
 - **Otro:** los diagramas de clases, casos de uso y actividades.
 
@@ -196,15 +221,15 @@ Luis sigue pagando $1500 por noche, porque su reservación guardó el precio al 
 <details>
 <summary>Respuesta</summary>
 
-2 y 2. Duerme el 29 y el 30 de diciembre (diciembre tiene 30 días en este programa) y el 1 y el 2 de enero. Sale el 03/01/2027.
+2 y 2. Duerme el 29 y el 30 de diciembre (diciembre tiene 30 días en este programa) y el 1 y el 2 de enero de 2027.
 
 </details>
 
-**3.** ¿Por qué `hotel.dibujarTipo("Doble")` dibuja dos camas sin que haya ningún `if` que pregunte el tipo?
+**3.** ¿Por qué `hotel.dibujarTipo("Doble")` dibuja dos camas sin que haya ningún `if` que pregunte qué dibujo usar?
 
 <details>
 <summary>Respuesta</summary>
 
-`buscarCuartoDeTipo("Doble")` regresa un objeto `CuartoDoble`, guardado en una variable de tipo `Cuarto`. Al llamar `dibujar()` se ejecuta la versión de `CuartoDoble`, porque Java usa la versión del objeto real y no la del tipo de la variable. Eso es polimorfismo.
+`dibujarTipo` recorre la lista y se queda con el primer cuarto cuyo tipo es `"Doble"`. Ese objeto es un `CuartoDoble` guardado en una variable de tipo `Cuarto`. Al llamar `dibujar()` se ejecuta la versión de `CuartoDoble`, porque Java usa la versión del objeto real y no la del tipo de la variable. Eso es polimorfismo.
 
 </details>

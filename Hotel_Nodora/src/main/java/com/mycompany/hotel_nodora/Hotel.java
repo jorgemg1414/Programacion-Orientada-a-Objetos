@@ -22,8 +22,7 @@ public class Hotel {
 
     private String nombre;
 
-    //Lista de cuartos. Es de tipo Cuarto (el padre), asi que caben simples, dobles,
-    //matrimoniales y cualquier tipo nuevo que se cree despues.
+    //Lista de cuartos. Es de tipo Cuarto (el padre), asi que caben simples, dobles y matrimoniales
     private ArrayList<Cuarto> cuartos=new ArrayList<>();
 
     //Diccionario de clientes habituales (socios): la CLAVE es la CURP y el VALOR son los datos del cliente.
@@ -52,30 +51,6 @@ public class Hotel {
     public Cuarto buscarCuarto(int numero){
         for(Cuarto c : cuartos){
             if(c.getNumero()==numero){
-                return c;
-            }
-        }
-        return null;
-    }
-
-    //Regresa los nombres de los tipos de cuarto que tiene el hotel, sin repetir.
-    //Con esto los menus se arman solos: si se agrega un tipo nuevo, aparece automaticamente.
-    public ArrayList<String> getTipos(){
-        ArrayList<String> tipos=new ArrayList<>();
-        for(Cuarto c : cuartos){
-            //contains revisa si el tipo ya estaba en la lista para no repetirlo
-            if(!tipos.contains(c.getTipo())){
-                tipos.add(c.getTipo());
-            }
-        }
-        return tipos;
-    }
-
-    //Regresa el primer cuarto de ese tipo. Como el precio y el dibujo son iguales para
-    //todos los cuartos del mismo tipo, con uno basta para consultarlos o cambiarlos.
-    public Cuarto buscarCuartoDeTipo(String tipo){
-        for(Cuarto c : cuartos){
-            if(c.getTipo().equals(tipo)){
                 return c;
             }
         }
@@ -116,21 +91,36 @@ public class Hotel {
         }
     }
 
-    //RECEPCIONISTA: precio por noche de un tipo de cuarto
+    //RECEPCIONISTA: precio por noche de un tipo de cuarto.
+    //Todos los cuartos del mismo tipo cuestan lo mismo, asi que basta con el primero que se encuentre.
     public double getPrecioDelTipo(String tipo){
-        return buscarCuartoDeTipo(tipo).getPrecio();
+        for(Cuarto c : cuartos){
+            if(c.getTipo().equals(tipo)){
+                return c.getPrecio();
+            }
+        }
+        return 0; //No hay cuartos de ese tipo
     }
 
     //ADMINISTRADOR: cambiar el precio de un tipo de cuarto.
-    //Basta con cambiarselo a un cuarto porque el precio es static y lo comparten todos los de su tipo.
+    //Se recorren todos los cuartos y se le cambia el precio a cada uno que sea de ese tipo.
     public void cambiarPrecioDelTipo(String tipo, double nuevoPrecio){
-        buscarCuartoDeTipo(tipo).setPrecio(nuevoPrecio);
+        for(Cuarto c : cuartos){
+            if(c.getTipo().equals(tipo)){
+                c.setPrecio(nuevoPrecio);
+            }
+        }
     }
 
-    //RECEPCIONISTA: dibujar la foto de un tipo de cuarto
+    //RECEPCIONISTA: dibujar la foto de un tipo de cuarto, usando el primer cuarto de ese tipo
     public void dibujarTipo(String tipo){
-        //dibujar() es polimorfico: cada tipo de cuarto hace su propio dibujo
-        buscarCuartoDeTipo(tipo).dibujar();
+        for(Cuarto c : cuartos){
+            if(c.getTipo().equals(tipo)){
+                //dibujar() es polimorfico: cada tipo de cuarto hace su propio dibujo
+                c.dibujar();
+                return; //Con un dibujo basta; return termina el metodo aqui
+            }
+        }
     }
 
     /************************ CLIENTES ************************/
@@ -156,7 +146,7 @@ public class Hotel {
     public void listarClientesHabituales(){
         if(clientesHabituales.isEmpty()){
             System.out.println("No hay clientes habituales registrados");
-            return; //return termina el metodo aqui
+            return;
         }
         System.out.println("Clientes habituales (socios):");
         //values() regresa todos los valores del diccionario (los clientes) para poder recorrerlos
@@ -181,10 +171,10 @@ public class Hotel {
         //aplicarDescuento() es polimorfico: a cada tipo de cliente le quita su propio descuento
         double total=cliente.aplicarDescuento(subtotal);
 
-        System.out.println("Cuarto "+tipo+": "+String.format("$%.2f", precioNoche)+" x "+noches
-                +" noche(s) = "+String.format("$%.2f", subtotal));
-        System.out.println("Descuento del "+cliente.getDescuento()+"%: -"+String.format("$%.2f", subtotal-total));
-        System.out.println("Precio total: "+String.format("$%.2f", total));
+        System.out.println("Cuarto "+tipo+": $"+String.format("%.2f", precioNoche)+" x "+noches
+                +" noche(s) = $"+String.format("%.2f", subtotal));
+        System.out.println("Descuento del "+cliente.getDescuento()+"%: -$"+String.format("%.2f", subtotal-total));
+        System.out.println("Precio total: $"+String.format("%.2f", total));
         return total;
     }
 
@@ -200,16 +190,9 @@ public class Hotel {
         return null;
     }
 
-    //RECEPCIONISTA y CLIENTE: reservar un cuarto.
-    //Regresa la reservacion nueva, o null si no se pudo hacer.
-    public Reservacion reservar(Cuarto cuarto, Cliente cliente, int dia, int mes, int anio, int noches, int huespedes){
-        //Red de seguridad: no se reserva un cuarto ocupado ni con mas huespedes de los que caben
-        if(!estaDisponible(cuarto) || huespedes>cuarto.getCapacidad()){
-            return null;
-        }
-        Reservacion nueva=new Reservacion(cliente, cuarto, dia, mes, anio, noches, huespedes);
-        reservaciones.add(nueva);
-        return nueva;
+    //RECEPCIONISTA y CLIENTE: guardar una reservacion nueva
+    public void agregarReservacion(Reservacion reservacion){
+        reservaciones.add(reservacion);
     }
 
     //RECEPCIONISTA: eliminar una reservacion con el numero del cuarto.
@@ -268,8 +251,8 @@ public class Hotel {
             if(noches>0){
                 double ganancia=noches*r.getPrecioPorNoche();
                 System.out.println("Cuarto #"+r.getCuarto().getNumero()+" ("+r.getCliente().getNombre()+"): "
-                        +noches+" noche(s) x "+String.format("$%.2f", r.getPrecioPorNoche())
-                        +" = "+String.format("$%.2f", ganancia));
+                        +noches+" noche(s) x $"+String.format("%.2f", r.getPrecioPorNoche())
+                        +" = $"+String.format("%.2f", ganancia));
                 total=total+ganancia;
                 hayAlguna=true;
             }

@@ -14,11 +14,8 @@ package com.mycompany.hotel_nodora;
 //Hereda de Cuarto; es el cuarto para pareja, con una sola cama grande
 public class CuartoMatrimonial extends Cuarto {
 
-    //Precio compartido por todos los cuartos matrimoniales
-    private static double precio=1200.0;
-
-    public CuartoMatrimonial(int numero){
-        super(numero);
+    public CuartoMatrimonial(int numero, double precio){
+        super(numero,precio);
     }
 
     @Override
@@ -26,25 +23,10 @@ public class CuartoMatrimonial extends Cuarto {
         return "Matrimonial";
     }
 
-    @Override
-    public double getPrecio(){
-        return precio;
-    }
-
-    //Cambia el precio de todos los matrimoniales
-    @Override
-    public void setPrecio(double nuevoPrecio){
-        precio=nuevoPrecio;
-    }
-
+    //Una cama king size, caben 2 personas
     @Override
     public int getCapacidad(){
         return 2;
-    }
-
-    @Override
-    public String getCamas(){
-        return "1 cama king size";
     }
 
     //Dibujo del cuarto visto desde arriba: una cama grande con un buro de cada lado

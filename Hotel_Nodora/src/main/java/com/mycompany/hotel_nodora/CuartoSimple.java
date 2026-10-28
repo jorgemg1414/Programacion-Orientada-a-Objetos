@@ -11,20 +11,14 @@ package com.mycompany.hotel_nodora;
 
 //Equipo: De Anda Gomez Santiago, Martin Gomez Jorge, Martin Valencia Oscar Jesus, Yanez Sanchez Eduardo
 
-//Esta clase hereda de Cuarto, o sea que ya trae el numero, mostrarInfo() y getNumero().
+//Esta clase hereda de Cuarto, o sea que ya trae el numero, el precio, mostrarInfo() y los getters.
 //Aqui nada mas se pone lo que es propio de un cuarto simple.
 public class CuartoSimple extends Cuarto {
 
-    /*El precio es static porque es del TIPO de cuarto y no de cada cuarto:
-     * todos los cuartos simples comparten esta misma variable, asi que cuando el
-     * administrador la cambia, cambia para todos los simples al mismo tiempo.
-     */
-    private static double precio=800.0;
-
-    //Este es el constructor, se manda a llamar con new CuartoSimple(101)
-    public CuartoSimple(int numero){
-        //super manda el numero al constructor de la clase Cuarto
-        super(numero);
+    //Este es el constructor, se manda a llamar con new CuartoSimple(101, 800)
+    public CuartoSimple(int numero, double precio){
+        //super manda los datos al constructor de la clase Cuarto
+        super(numero,precio);
     }
 
     //De aqui para abajo se SOBRESCRIBEN los metodos abstractos del padre
@@ -33,26 +27,10 @@ public class CuartoSimple extends Cuarto {
         return "Simple";
     }
 
-    @Override
-    public double getPrecio(){
-        return precio;
-    }
-
-    //Aunque se mande llamar desde un solo cuarto, como precio es static
-    //cambia el precio de TODOS los cuartos simples
-    @Override
-    public void setPrecio(double nuevoPrecio){
-        precio=nuevoPrecio;
-    }
-
+    //Una cama individual, cabe una persona
     @Override
     public int getCapacidad(){
         return 1;
-    }
-
-    @Override
-    public String getCamas(){
-        return "1 cama individual";
     }
 
     //Dibujo del cuarto visto desde arriba: una cama individual con su buro

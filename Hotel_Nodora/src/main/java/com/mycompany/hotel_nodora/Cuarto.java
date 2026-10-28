@@ -15,19 +15,20 @@ package com.mycompany.hotel_nodora;
  * Es abstracta, igual que FigurasGeometricas: no se puede hacer new Cuarto(...),
  * solo new CuartoSimple(...), new CuartoDoble(...) o new CuartoMatrimonial(...).
  *
- * Para agregar un tipo nuevo de cuarto (por ejemplo una Suite) NO se cambia nada de esta clase:
+ * Para agregar un tipo nuevo de cuarto (por ejemplo una Suite):
  *   1. Se crea class Suite extends Cuarto y se le ponen sus metodos abstractos
- *   2. Se dan de alta sus cuartos en cargarDatosDeEjemplo() de Hotel_Nodora
- * Los menus que preguntan el tipo de cuarto se arman solos con los tipos que tenga el hotel.
+ *   2. Se agrega su opcion en elegirTipo() y sus cuartos en cargarDatosDeEjemplo() de Hotel_Nodora
  */
 public abstract class Cuarto {
 
-    //protected: las clases hijas lo pueden usar directo, pero el resto del programa no
-    protected int numero; //Numero del cuarto, ej. 101
+    //protected: las clases hijas los pueden usar directo, pero el resto del programa no
+    protected int numero;    //Numero del cuarto, ej. 101
+    protected double precio; //Precio por noche
 
     /*Constructor*/
-    public Cuarto(int numero){
+    public Cuarto(int numero, double precio){
         this.numero=numero;
+        this.precio=precio;
     }
 
     /*Metodos abstractos
@@ -35,23 +36,27 @@ public abstract class Cuarto {
      * propia version (con @Override). Gracias a esto el hotel trata a todos los cuartos
      * igual, aunque cada tipo conteste diferente (polimorfismo).
      */
-    public abstract String getTipo();                  //Nombre del tipo: "Simple", "Doble", ...
-    public abstract double getPrecio();                //Precio por noche del tipo de cuarto
-    public abstract void setPrecio(double nuevoPrecio); //Cambia el precio de TODOS los cuartos de ese tipo
-    public abstract int getCapacidad();                //Maximo de huespedes que caben
-    public abstract String getCamas();                 //Que camas tiene
-    public abstract void dibujar();                    //La "foto" del cuarto hecha con caracteres
+    public abstract String getTipo();   //Nombre del tipo: "Simple", "Doble" o "Matrimonial"
+    public abstract int getCapacidad(); //Maximo de huespedes que caben
+    public abstract void dibujar();     //La "foto" del cuarto hecha con caracteres
 
     //Este metodo NO es abstracto porque es igual para todos los cuartos, asi que los hijos lo heredan tal cual.
-    //Adentro llama a los metodos abstractos y cada hijo contesta con sus propios datos.
-    //String.format("$%.2f", ...) deja el precio con 2 decimales, ej. 800.0 -> $800.00
+    //String.format("%.2f", ...) deja el precio con 2 decimales, ej. 800.0 -> 800.00
     public void mostrarInfo(){
-        System.out.println("Cuarto #"+this.numero+" | "+getTipo()+" | "+getCamas()
-                +" | capacidad: "+getCapacidad()+" | "+String.format("$%.2f", getPrecio())+" por noche");
+        System.out.println("Cuarto #"+this.numero+" | "+getTipo()+" | capacidad: "+getCapacidad()
+                +" | $"+String.format("%.2f", this.precio)+" por noche");
     }
 
-    //Getter del numero (no lleva setter porque el numero de un cuarto no cambia)
+    /*Getters y setters*/
     public int getNumero(){
         return this.numero;
+    }
+
+    public double getPrecio(){
+        return this.precio;
+    }
+
+    public void setPrecio(double precio){
+        this.precio=precio;
     }
 }

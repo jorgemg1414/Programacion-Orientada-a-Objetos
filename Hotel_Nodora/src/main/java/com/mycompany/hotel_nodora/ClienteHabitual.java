@@ -15,9 +15,8 @@ package com.mycompany.hotel_nodora;
 //del hotel con su CURP como clave, y por ser socio recibe descuento.
 public class ClienteHabitual extends Cliente {
 
-    //Datos personales extra que solo se le piden al socio cuando se registra
+    //Dato personal extra que se le pide al socio cuando se registra
     private String telefono;
-    private String correo;
 
     /*El descuento es static porque es el MISMO para todos los socios:
      * si el administrador lo cambia, les cambia a todos al mismo tiempo.
@@ -25,12 +24,11 @@ public class ClienteHabitual extends Cliente {
      */
     private static int porcentajeDescuento=10;
 
-    public ClienteHabitual(String curp, String nombre, String telefono, String correo){
+    public ClienteHabitual(String curp, String nombre, String telefono){
         //La CURP y el nombre se los mandamos al padre
         super(curp,nombre);
         //Lo particular del socio se guarda aqui
         this.telefono=telefono;
-        this.correo=correo;
     }
 
     @Override
@@ -48,7 +46,7 @@ public class ClienteHabitual extends Cliente {
     public void mostrarInfo(){
         //super.mostrarInfo() ejecuta primero la version del padre (nombre, CURP y tipo)
         super.mostrarInfo();
-        System.out.println("   Tel: "+this.telefono+" | Correo: "+this.correo+" | Descuento: "+porcentajeDescuento+"%");
+        System.out.println("   Tel: "+this.telefono+" | Descuento: "+porcentajeDescuento+"%");
     }
 
     /*Metodos static: se mandan llamar con el nombre de la clase, sin necesitar un objeto.
@@ -63,12 +61,7 @@ public class ClienteHabitual extends Cliente {
         porcentajeDescuento=nuevoPorcentaje;
     }
 
-    /*Getters de los datos del socio*/
     public String getTelefono(){
         return this.telefono;
-    }
-
-    public String getCorreo(){
-        return this.correo;
     }
 }
