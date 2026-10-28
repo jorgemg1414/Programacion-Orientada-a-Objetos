@@ -3,7 +3,7 @@
  */
 
 package com.mycompany.hotel_nodora;
-import java.util.*;
+import java.util.Scanner;
 
 /**
  *
@@ -179,7 +179,7 @@ public class Hotel_Nodora {
         } while(opcion!=10);
     }
 
-    /************************ MENU DEL ADMINISTRADOR ************************/
+    /********************** MENU DEL ADMINISTRADOR **********************/
     static void menuAdministrador(Hotel hotel){
         int opcion;
         do{
